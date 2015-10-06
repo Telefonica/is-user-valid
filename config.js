@@ -18,7 +18,8 @@ var config = {
     'maxConnections': 5,
     'searchBase': 'o=TID',
     'filterFieldName': 'mail',
-    'scope': 'sub'
+    'scope': 'sub',
+    'attributes': 'mail'
   }
 };
 
