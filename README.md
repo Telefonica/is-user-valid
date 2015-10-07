@@ -6,7 +6,7 @@ Really simple service to check if a user is valid in your ldap based on the user
 ## Installation
 
 ```sh
-git clone 
+git clone https://github.com/TDAF/is-user-valid.git
 cd is-user-valid
 npm install
 ```
@@ -43,7 +43,7 @@ var config = {
 ## Running and using the app
 
 ```sh
-node lib/is-user-valid.js | tee -a path_to_file_where_logs_will_be_stored > /dev/null &
+nohup node lib/is-user-valid.js | tee -a path_to_file_where_logs_will_be_stored > /dev/null &
 ```
 
 Now, simply send you queries: 
@@ -54,4 +54,4 @@ GET http://hostname:port/is-user-valid/api/v1/emails/user@domain.com
 
 ## Caveats
 
-It is recommeded to add HTTPS support to protect HTTP Basic Auth Passwords. You can do so for example by placing an nginx in front of the app.
+It is recommeded to add HTTPS support to protect HTTP Basic Auth passwords. You can do so for example by placing an nginx in front of the app.
