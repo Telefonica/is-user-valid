@@ -5,11 +5,11 @@ var config = {
   'realm': 'mycompany',
   'clients': {
     'client_id_A' : {
-      'client_secret' : 'a',
+      'secret' : 'a',
       'company': 'A'
     },
     'client_id_B' : {
-      'client_secret' : 'b',
+      'secret' : 'b',
       'company': 'B'
     }
   },
