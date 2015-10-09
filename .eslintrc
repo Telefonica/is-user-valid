@@ -3,8 +3,8 @@
     "node": true
   },
   "rules": {
-    "no-use-before-define": [2, "nofunc"], //latedef in jshint
-    "quotes": [2, "single"],
+    "no-use-before-define": [1, "nofunc"], //latedef in jshint
+    "quotes": [2, "single", "avoid-escape"],
     "no-underscore-dangle": 0,
     "new-cap": [1, {"capIsNew": false}]
   }

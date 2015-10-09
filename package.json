@@ -1,35 +1,24 @@
 {
-  "name": "github-admin",
+  "name": "is-user-valid",
   "description": "Really simple service to check if a user is valid in your ldap",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "license": "Apache-2.0",
   "author": {
     "name": "David Lozano",
     "email": "david.lozanollanos@telefonica.com"
   },
-  "contributors": [
-  ],
+  "contributors": [],
   "repository": {
     "type": "git",
-    "url": "https://github.com/TDAF/isUserValid.git"
+    "url": "https://github.com/TDAF/is-user-valid.git"
   },
   "main": "lib/is-user-valid",
   "engines": {
     "node": ">= 0.10.40"
   },
-  "devDependencies": {
-    "chai": "^3.0.0",
-    "coveralls": "^2.11.2",
-    "istanbul": "^0.3.16",
-    "mocha": "^2.2.5",
-    "proxyquire": "^1.5.0",
-    "should": "^7.0.1",
-    "sinon": "~1.15.3",
-    "sinon-chai": "^2.8.0",
-    "supertest": "^1.0.1",
-    "xunit-file": "^0.0.6",
-    "jscs": "^1.13.1",
-    "eslint": "^0.23.0"
+  "scripts": {
+    "lint": "jscs lib && eslint lib",
+    "prepublish": "npm run lint"
   },
   "dependencies": {
     "express": "^4.11.0",
@@ -45,5 +34,9 @@
     "express",
     "ldap",
     "user"
-  ]
+  ],
+  "devDependencies": {
+    "eslint": "^1.6.0",
+    "jscs": "^2.3.0"
+  }
 }

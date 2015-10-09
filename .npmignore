@@ -27,3 +27,11 @@ node_modules
 /.idea/
 /report/
 *.iml
+
+deploy
+
+.eslintrc
+.gitignore
+.jscsrc
+.travis.yml
+CONTRIBUTING.md
