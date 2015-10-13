@@ -1,7 +1,7 @@
 {
   "name": "is-user-valid",
   "description": "Really simple service to check if a user is valid in your ldap",
-  "version": "1.0.0",
+  "version": "1.0.2",
   "license": "Apache-2.0",
   "author": {
     "name": "David Lozano",
@@ -13,6 +13,9 @@
     "url": "https://github.com/TDAF/is-user-valid.git"
   },
   "main": "lib/is-user-valid",
+  "bin": {
+    "is-user-valid": "./bin/is-user-valid"
+  },
   "engines": {
     "node": ">= 0.10.40"
   },
