@@ -1,0 +1,19 @@
+#!/usr/bin/env node
+
+//TODO: Very silly, review this and add configuration options and things like that
+process.env.NODE_ENV = 'production';
+process.env.LOGOPS_FORMAT = 'json';
+process.env.NODE_TLS_REJECT_UNAUTHORIZED = 0;
+
+if (process.argv.indexOf('--version') > 0) {
+  var fs = require('fs');
+  var path = require('path');
+
+  var pkgFilePath = path.join(__dirname, '..', 'package.json');
+  var pkg = JSON.parse(fs.readFileSync(pkgFilePath));
+  console.log(pkg.version + ' (' + pkg.releaseName + ')');
+
+  process.exit(0);
+}
+
+require('../');
