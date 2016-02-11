@@ -21,14 +21,17 @@
     "prepublish": "npm run lint"
   },
   "dependencies": {
-    "express": "^4.11.0",
+    "basic-auth": "^1.0.3",
     "body-parser": "^1.13.2",
-    "ldapjs": "0.7.1",
-    "logops": "^0.5.0",
+    "express": "^4.11.0",
     "express-domaining": "^1.0.2",
     "express-logging": "^1.0.0",
     "express-tracking": "^1.0.0",
-    "basic-auth": "^1.0.3"
+    "ldapjs": "0.7.1",
+    "logops": "^0.5.0",
+    "merge-config": "^1.0.0",
+    "path": "^0.12.7",
+    "server-terminate": "^1.0.0"
   },
   "keywords": [
     "express",

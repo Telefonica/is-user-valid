@@ -14,39 +14,58 @@ The above will run the app listening at port 5000. That's the default port confi
 
 ## Configuration
 
-```javascript
-var config = {
-  'port': 5000, //port where the app listens
-  'realm': 'mycompany', //name of realm for you campany, used for HTTP basic auth
-  'clients': { //list of clients and passwords that give access to the API
-    'client_id_A' : {
-      'secret' : 'a',
-      'company': 'A'
+```json
+{
+  "port": 5000,
+  "realm": "mycompany",
+
+  //List of clients that can access the API
+  "clients": {
+    "clientA" : {
+        "secret" : "secretA",
+        "company": "A"
     },
-    'client_id_B' : {
-      'secret' : 'b',
-      'company': 'B'
+    "clientB" : {
+        "secret" : "secretB",
+        "company": "B"
     }
   },
-  'ldap': { //ldap configuration
-    'url': 'ldap://replicahi.hi.inet:389',
-    'maxConnections': 5, //recommended value so that ldap client handles reconnections, etc
-    //you can customize the ldap query by setting following fields
-    'searchBase': 'o=TID', 
-    'filterFieldName': 'mail',
-    'scope': 'sub',
-    'attributes': 'mail'
+
+  //ldap configuration
+  "ldap": {
+    //General configuration options
+    "url": "ldap://replicahi.hi.inet:389",
+    "maxConnections": 5,
+
+    //ldap queries can be customized based on email domain
+    "domains": {
+      //default config
+      "default" : {
+        "searchBase": "o=TID",
+        "filterFieldName": "mail",
+        "scope": "sub",
+        "attributes": "mail",
+      },
+      "tid.es" : {
+        "searchBase": "o=TID",
+        "filterFieldName": "uid",
+        "filterFieldRegEx": "([^@]*)",
+        "scope": "sub",
+        "attributes": "uid"
+      }
+    }
   }
-};
+}
 ```
 
 ## Running and using the app
 
 ```sh
-nohup node lib/is-user-valid.js | tee -a path_to_file_where_logs_will_be_stored > /dev/null &
+nohup node CONFIG_DIR=[path_to_where_your_config-is] lib/is-user-valid.js | tee -a path_to_file_where_logs_will_be_stored > /dev/null &
 ```
+CONFIG_DIR is optional. Note that the content of the config files that are present in this directory will be merged with the config in lib/config/ of this repository (the default config). In case of setting the same attribute, you custom config will take precedence and will override default values.
 
-Now, simply send you queries: 
+Now, simply send you queries:
 
 ```
 GET http://hostname:port/is-user-valid/api/v1/emails/user@domain.com

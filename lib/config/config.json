@@ -1,0 +1,34 @@
+{
+  "port": 5000,
+  "realm": "mycompany",
+
+  //List of clients that can access the API
+  "clients": {
+    "clientA" : {
+        "secret" : "secretA",
+        "company": "A"
+    },
+    "clientB" : {
+        "secret" : "secretB",
+        "company": "B"
+    }
+  },
+
+  //ldap configuration
+  "ldap": {
+    //General configuration options
+    "url": "ldap://replicahi.hi.inet:389",
+    "maxConnections": 5,
+
+    //ldap queries can be customized based on email domain
+    "domains": {
+      //default config. You should not remove it.
+      "default" : {
+        "searchBase": "o=TID",
+        "filterFieldName": "mail",
+        "scope": "sub",
+        "attributes": "mail"
+      }
+    }
+  }
+}
