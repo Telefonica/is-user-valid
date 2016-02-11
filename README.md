@@ -46,7 +46,7 @@ The above will run the app listening at port 5000. That's the default port confi
       "default" : {
         "searchBase": "o=TID",
         "filterFieldName": "mail",
-        //Regex to select the part of the email address to be used when querying
+        //Regex to select the part of the email address to be used when querying. It MUST be set.
         "filterFieldRegEx": "(.*)",
         "scope": "sub",
         "attributes": "mail",
@@ -66,7 +66,7 @@ The above will run the app listening at port 5000. That's the default port confi
 ## Running and using the app
 
 ```sh
-nohup node CONFIG_DIR=[path_to_where_your_config_is] lib/is-user-valid.js | tee -a path_to_file_where_logs_will_be_stored > /dev/null &
+ CONFIG_DIR=[path_to_where_your_config_is] node lib/is-user-valid.js | tee -a path_to_file_where_logs_will_be_stored > /dev/null &
 ```
 CONFIG_DIR is optional. Note that the content of the config files that are present in this directory will be merged with the config in lib/config/ of this repository (the default config). In case of setting the same attribute, your custom config will take precedence and will override default values.
 
