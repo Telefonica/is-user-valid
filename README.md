@@ -66,7 +66,7 @@ The above will run the app listening at port 5000. That's the default port confi
 ## Running and using the app
 
 ```sh
- CONFIG_DIR=[path_to_where_your_config_is] node lib/is-user-valid.js | tee -a path_to_file_where_logs_will_be_stored > /dev/null &
+ CONFIG_DIR=/Users/dll/Documents/TID/etc ./bin/is-user-valid | tee -a path_to_file_where_logs_will_be_stored > /dev/null &
 ```
 CONFIG_DIR is optional. Note that the content of the config files that are present in this directory will be merged with the config in lib/config/ of this repository (the default config). In case of setting the same attribute, your custom config will take precedence and will override default values.
 
