@@ -39,10 +39,12 @@ The above will run the app listening at port 5000. That's the default port confi
 
     //ldap queries can be customized based on email domain
     "domains": {
-      //default config
+      //default config. You should not remove it.
       "default" : {
         "searchBase": "o=TID",
         "filterFieldName": "mail",
+        //Regex to select the part of the email address to be used when querying
+        "filterFieldRegEx": "(.*)",
         "scope": "sub",
         "attributes": "mail",
       },

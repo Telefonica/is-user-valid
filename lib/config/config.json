@@ -26,6 +26,7 @@
       "default" : {
         "searchBase": "o=TID",
         "filterFieldName": "mail",
+        "filterFieldRegEx": "(.*)",
         "scope": "sub",
         "attributes": "mail"
       }
