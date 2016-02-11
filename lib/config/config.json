@@ -7,10 +7,6 @@
     "clientA" : {
         "secret" : "secretA",
         "company": "A"
-    },
-    "clientB" : {
-        "secret" : "secretB",
-        "company": "B"
     }
   },
 

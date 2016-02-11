@@ -36,6 +36,9 @@ The above will run the app listening at port 5000. That's the default port confi
     //General configuration options
     "url": "ldap://replicahi.hi.inet:389",
     "maxConnections": 5,
+    //include username and password when you need to authenticate against the ldap server
+    "username": "aaaa",
+    "password": "bbbb",
 
     //ldap queries can be customized based on email domain
     "domains": {
