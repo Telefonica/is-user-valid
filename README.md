@@ -8,7 +8,7 @@ Really simple service to check if a user is valid in your ldap based on the user
 ```sh
 npm install is-user-valid
 ```
-The above will run the app listening at port 5000. That's the default port configured for development. You can change that and other settings as explained below.
+The above will install the app for listening at port 5000. That's the default port configured for development. You can change that and other settings as explained below.
 
 ## Configuration
 
