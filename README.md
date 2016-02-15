@@ -6,9 +6,7 @@ Really simple service to check if a user is valid in your ldap based on the user
 ## Installation
 
 ```sh
-git clone https://github.com/TDAF/is-user-valid.git
-cd is-user-valid
-npm install
+npm install is-user-valid
 ```
 The above will run the app listening at port 5000. That's the default port configured for development. You can change that and other settings as explained below.
 
@@ -66,7 +64,7 @@ The above will run the app listening at port 5000. That's the default port confi
 ## Running and using the app
 
 ```sh
- CONFIG_DIR=/Users/dll/Documents/TID/etc ./bin/is-user-valid | tee -a path_to_file_where_logs_will_be_stored > /dev/null &
+ CONFIG_DIR=[path_to_your_config_file_dir] is-user-valid | tee -a [file_where_logs_will_be_stored] > /dev/null &
 ```
 CONFIG_DIR is optional. Note that the content of the config files that are present in this directory will be merged with the config in lib/config/ of this repository (the default config). In case of setting the same attribute, your custom config will take precedence and will override default values.
 
