@@ -1,13 +1,15 @@
 {
   "name": "is-user-valid",
   "description": "Really simple service to check if a user is valid in your ldap",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "license": "Apache-2.0",
   "author": {
     "name": "David Lozano",
     "email": "david.lozanollanos@telefonica.com"
   },
-  "contributors": [],
+  "contributors": [
+    "Eduardo Alonso García <eduardo.alonsogarcia@telefonica.com>"
+  ],
   "repository": {
     "type": "git",
     "url": "https://github.com/TDAF/is-user-valid.git"

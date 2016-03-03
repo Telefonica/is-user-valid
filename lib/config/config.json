@@ -13,8 +13,12 @@
   //ldap configuration
   "ldap": {
     //General configuration options
-    "url": "ldap://replicahi.hi.inet:389",
-    "maxConnections": 5,
+    "client_config": {
+      "url": "ldap://replicahi.hi.inet:389",
+      "timeout": 20000,
+      "connectTimeout": 30000,
+      "idleTimeout": 30000
+    },
 
     //ldap queries can be customized based on email domain
     "domains": {
