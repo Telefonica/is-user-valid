@@ -32,8 +32,12 @@ The above will install the app for listening at port 5000. That's the default po
   //ldap configuration
   "ldap": {
     //General configuration options
-    "url": "ldap://replicahi.hi.inet:389",
-    "maxConnections": 5,
+    "clientConfig": {
+      "url": "ldap://replicahi.hi.inet:389",
+      "timeout": 20000,
+      "connectTimeout": 30000,
+      "idleTimeout": 30000
+    },
     //include username and password when you need to authenticate against the ldap server
     "username": "aaaa",
     "password": "bbbb",
