@@ -13,7 +13,7 @@
   //ldap configuration
   "ldap": {
     //General configuration options
-    "client_config": {
+    "clientConfig": {
       "url": "ldap://replicahi.hi.inet:389",
       "timeout": 20000,
       "connectTimeout": 30000,
