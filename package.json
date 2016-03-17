@@ -8,7 +8,8 @@
     "email": "david.lozanollanos@telefonica.com"
   },
   "contributors": [
-    "Eduardo Alonso García <eduardo.alonsogarcia@telefonica.com>"
+    "Eduardo Alonso García <eduardo.alonsogarcia@telefonica.com>",
+    "Javier Mendiara Cañardo <javier.mendiaracanardo@telefonica.com>"
   ],
   "repository": {
     "type": "git",
@@ -33,7 +34,7 @@
     "express-logging": "^1.0.0",
     "express-tracking": "^1.0.0",
     "ldapjs": "1.0.0",
-    "logops": "^0.5.0",
+    "logops": "^1.0.0-alpha.5",
     "merge-config": "^1.0.0",
     "path": "^0.12.7",
     "server-terminate": "^1.0.0"
