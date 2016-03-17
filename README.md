@@ -44,7 +44,9 @@ The above will install the app for listening at port 5000. That's the default po
 
     //ldap queries can be customized based on email domain
     "domains": {
-    //configuration for making ldap queries for @tid.es email addresses. Following config will produce a query identical to this for         //email address dll@tid.es: ldapsearch -x -H ldap://your_ldap_url.tld:389 -b o=TID uid=dll uid
+    //configuration for making ldap queries for @tid.es email addresses. 
+    //Following config will produce a query identical to this for email address dll@tid.es: 
+    //ldapsearch -x -H ldap://your_ldap_url.tld:389 -b o=TID uid=dll uid
       "tid.es" : {
         //ldap tree searchBase
         "searchBase": "o=TID",
