@@ -1,4 +1,10 @@
 #!/usr/bin/env node
+var app = require('../lib/is-user-valid'),
+    http = require('http'),
+    enableTerminate = require('server-terminate'),
+    logger = require('../lib/logger'),
+    config = require('../lib/config');
+
 
 //TODO: Very silly, review this and add configuration options and things like that
 process.env.NODE_ENV = 'production';
@@ -16,4 +22,24 @@ if (process.argv.indexOf('--version') > 0) {
   process.exit(0);
 }
 
-require('../');
+var server = http.createServer(app);
+// Allow the server to gracefully finish connections without waiting for
+// keep-alive connections that are not being used
+enableTerminate(server);
+server.listen(config.get('port'), function() {
+  logger.info('is-user-valid server listening', server.address());
+});
+
+function orderedShutdown() {
+  logger.debug('ordered shutdown');
+  server.terminate(function onTerminated() {
+    process.exit(0);
+  });
+}
+
+process.on('SIGTERM', orderedShutdown);
+process.on('SIGINT', orderedShutdown);
+process.on('uncaughtException', function(err) {
+  logger.fatal(err);
+  process.exit(2);
+});
