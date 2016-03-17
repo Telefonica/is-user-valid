@@ -43,5 +43,3 @@ process.on('uncaughtException', function(err) {
   logger.fatal(err);
   process.exit(2);
 });
-
-require('../');
