@@ -33,7 +33,7 @@ The above will install the app for listening at port 5000. That's the default po
   "ldap": {
     //General configuration options
     "clientConfig": {
-      "url": "ldap://replicahi.hi.inet:389",
+      "url": "ldap://your_ldap_url.tld:389",
       "timeout": 20000,
       "connectTimeout": 30000,
       "idleTimeout": 30000
@@ -44,7 +44,19 @@ The above will install the app for listening at port 5000. That's the default po
 
     //ldap queries can be customized based on email domain
     "domains": {
-      //default config. You should not remove it.
+    //configuration for making ldap queries for @tid.es email addresses. Following config will produce a query identical to this for         //email address dll@tid.es: ldapsearch -x -H ldap://your_ldap_url.tld:389 -b o=TID uid=dll uid
+      "tid.es" : {
+        //ldap tree searchBase
+        "searchBase": "o=TID",
+        //fieldName based on which the ladp query will be applied.
+        "filterFieldName": "uid",
+        //regex to select the part of the email to be used as value for the query. It MUST be set.
+        "filterFieldRegEx": "([^@]*)",
+        "scope": "sub",
+        //attributes to be included when filtering the response
+        "attributes": "uid"
+      },
+      //default config: when there is no config for a specif email domain, this ldap query configuration will apply.
       "default" : {
         "searchBase": "o=TID",
         "filterFieldName": "mail",
@@ -52,13 +64,6 @@ The above will install the app for listening at port 5000. That's the default po
         "filterFieldRegEx": "(.*)",
         "scope": "sub",
         "attributes": "mail",
-      },
-      "tid.es" : {
-        "searchBase": "o=TID",
-        "filterFieldName": "uid",
-        "filterFieldRegEx": "([^@]*)",
-        "scope": "sub",
-        "attributes": "uid"
       }
     }
   }
