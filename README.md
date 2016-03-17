@@ -12,7 +12,7 @@ The above will install the app for listening at port 5000. That's the default po
 
 ## Configuration
 
-```json
+```js
 {
   "port": 5000,
   "realm": "mycompany",
