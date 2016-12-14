@@ -1,0 +1,17 @@
+- name: Basic | Create security group "{{ item.name }}"
+  os_security_group:
+    name: "{{ item.name }}"
+    state: present
+    description: "{{ item.description }}"
+  register: sec_group
+
+- name: setting group_id for "{{sec_group.secgroup.name}}" sec group
+  set_fact:
+    this_group_info: "{ '{{sec_group.secgroup.name}}' : '{{sec_group.secgroup.id}}' }"
+
+- name: adding "{{sec_group.secgroup.name}}" to list of sec groups
+  set_fact:
+    sec_groups_info: "{{ ( sec_groups_info | default({})) | combine(this_group_info) }}"
+
+- name: Sec group info is now the following
+  debug: msg="{{sec_groups_info}}"

@@ -1,0 +1,25 @@
+- name: Load configuration variables
+  hosts: all
+  gather_facts: true
+  connection: local
+  tags: always
+  tasks:
+    - include_vars: "is-user-valid-vault.yml"
+    - include_vars: "is-user-valid.yml"
+
+- name: Create infrastructure
+  include: playbook_00_infrastructure.yml
+
+- name: Get all facts for all servers but localhost
+  hosts: all,!localhost
+  gather_facts: true
+  remote_user: cloud-user
+  tags: always
+  become: yes
+  tasks: []
+
+- name: Deploy the platform
+  include: playbook_01_platform.yml
+
+- name: Deploy is-user-valid service
+  include: playbook_02_service.yml
