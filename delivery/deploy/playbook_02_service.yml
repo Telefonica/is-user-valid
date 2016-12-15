@@ -8,3 +8,14 @@
   roles:
     - role: ansible-is-user-valid
       config: "{{ is_user_valid_role_config }}"
+
+- name: Install nginx for SSL offloading and loadbalancing
+  hosts: loadbalancer
+  gather_facts: false
+  remote_user: cloud-user
+  become: true
+  tags:
+    - nginx
+
+  tasks:
+    - include: tasks/nginx.yml

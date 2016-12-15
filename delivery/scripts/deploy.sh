@@ -34,11 +34,11 @@ fi
 # vault_pass.txt is needed to decrypt sensitive config params and keys. It is created in run time, won't be in repo
 ansible-playbook playbook.yml -e @config.yml $FLAGV --vault-password-file vault_pass.txt
 if [ $? -ne 0 ]; then
-  echo "Error deploying accounts"
+  echo "Error deploying is-user-valid"
   popd &> /dev/null
   exit 1
 fi
 
 popd &> /dev/null
 
-echo "######### Deploy successfully completed in ${ENVIRONMENT} #########"
+echo "######### Deploy successfully completed #########"

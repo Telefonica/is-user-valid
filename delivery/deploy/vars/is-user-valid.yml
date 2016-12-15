@@ -60,3 +60,10 @@ REPOS:
 
 # Maximum number of open files
 number_open_files: 20000
+
+# SSL config
+nginx_ssl_protocols: TLSv1 TLSv1.1 TLSv1.2
+nginx_ssl_ciphers: EECDH+AESGCM:EDH+AESGCM:AES256+EECDH:AES256+EDH
+nginx_certificate: nginx/is-user-valid.cer
+nginx_key_content: "{{ vault.ssl.nginx_private_key_content }}"
+nginx_dhparams_content: "{{ vault.ssl.dhparams_content }}"

@@ -1,0 +1,5 @@
+upstream is-user-valid {
+    {% for item in groups['is-user-valid'] %}
+        server {{ item }}:{{ is_user_valid_role_config.port }} fail_timeout=30s;
+    {% endfor %}
+}
