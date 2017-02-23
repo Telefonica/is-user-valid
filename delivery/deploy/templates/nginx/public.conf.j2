@@ -1,0 +1,27 @@
+server {
+   listen 443 ssl;
+   server_name {{ domain }};
+   ssl_certificate /etc/nginx/certs/tid.cer;
+   ssl_certificate_key /etc/nginx/certs/tid.key;
+   ssl_dhparam /etc/nginx/dhparams.pem;
+   ssl_protocols {{ nginx_ssl_protocols }};
+   ssl_ciphers {{ nginx_ssl_ciphers }};
+   ssl_prefer_server_ciphers on;
+   ssl_ecdh_curve secp384r1;
+   ssl_session_cache shared:SSL:10m;
+   ssl_session_tickets off;
+   add_header Strict-Transport-Security "max-age=63072000; includeSubdomains; preload";
+   add_header X-Content-Type-Options nosniff;
+   location /is-user-valid/api/v1/emails/ {
+       proxy_pass http://is-user-valid$request_uri;
+
+   }
+}
+
+server {
+   listen 80;
+   server_name {{ domain }};
+   add_header X-Frame-Options DENY;
+   add_header Content-Security-Policy "default-src 'self';";
+   return 301 https://$host$request_uri;
+}

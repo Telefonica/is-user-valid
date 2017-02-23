@@ -1,0 +1,68 @@
+- name: Perform common SO operations
+  hosts: all,!localhost
+  remote_user: cloud-user
+  gather_facts: false
+  become: true
+  tasks:
+    - include: tasks/common.yml
+
+- name: Install base sw for is-user-valid
+  hosts: is-user-valid
+  gather_facts: false
+  remote_user: cloud-user
+  become: true
+  roles:
+    - role: ansible-rhel
+      node_version: 4.2.6
+      artifactory_proxy: "{{ REPOS.proxy }}"
+  tasks:
+    - name: Make sure /etc/init folder exists
+      file: path=/etc/init state=directory mode=0755
+
+- name: Install base sw for loadbalancers
+  hosts: loadbalancer
+  gather_facts: false
+  remote_user: cloud-user
+  become: true
+  roles:
+    - role: ansible-rhel
+      artifactory_proxy: "{{ REPOS.proxy }}"
+
+- name: KeepAlived | Create floating port
+  hosts: localhost
+  connection: local
+  gather_facts: false
+  tags: nginx
+  tasks:
+    - include: roles/ansible-keepalived/tasks/floating_port.yml
+      vars:
+        keepalived_floating_ip: "{{ floating_ip_balancer }}"
+
+- name: KeepAlived | Set fact keepalived_internal_ip with internal IP of the floating port
+  hosts: all,!localhost
+  connection: local
+  gather_facts: false
+  become: no
+  tags: nginx
+  tasks:
+    - include: roles/ansible-keepalived/tasks/floating_port_fact.yml
+
+- name: KeepAlived | Prepare server ports and install keepalived
+  hosts: loadbalancer
+  gather_facts: false
+  remote_user: cloud-user
+  become: yes
+  tags: nginx
+  roles:
+    - role: ansible-keepalived
+
+- name: Install common utils
+  hosts: all,!localhost
+  remote_user: cloud-user
+  gather_facts: false
+  become: true
+  tags: common-utils
+
+  roles:
+    - role: bennojoy.ntp
+      ntp_server: [2.ubuntu.pool.ntp.org, 1.ubuntu.pool.ntp.org]

@@ -1,0 +1,69 @@
+# Flavors for the OS instances
+flavors:
+  loadbalancer: TID-01CPU-01GB-20GB
+  is_user_valid: TID-01CPU-01GB-20GB
+
+# Number of OS instances for each group
+amounts:
+  loadbalancer: 2
+  is_user_valid: 2
+
+# OpenStack images
+ost_images:
+  rh6_2nic: TID-RH6-2NIC.20161201
+  rh7_2nic: TID-RH7-2NIC.20160503
+
+# settings for deploying is_user_valid with the ansible role
+is_user_valid_role_config:
+  port: 5000
+  realm: "TID"
+  clients:
+    acc_is_user:
+      secret: "{{ vault.is_user_valid.tid.password }}"
+      company: "TID"
+  ldap:
+    client_config:
+      url: "ldap://replicahi.hi.inet:389"
+      timeout: 20000
+      connectTimeout: 30000
+      idleTimeout: 30000
+    domains:
+      default:
+        searchBase: "o=TID"
+        filterFieldName: "mail"
+        scope: "sub"
+        filterFieldRegEx: "(.*)"
+        attributes: "mail"
+      tid.es:
+        searchBase: "o=TID"
+        filterFieldName: "uid"
+        filterFieldRegEx: "([^@]*)"
+        scope: "sub"
+        attributes: "uid"
+
+# HA for balancers with keepalived
+keepalived_service: nginx
+keepalived_port_name: port_balancer
+keepalived_interface: eth1
+keepalived_network: "{{ os_network_external }}"
+keepalived_security_group: balancer_access
+
+# Public domain where is-user-valid will be published
+domain: accounts.tid.es
+
+# HA-keepalived floating IP
+floating_ip_balancer: 192.168.137.247
+
+# Artifactory repos
+REPOS:
+  proxy: "http://prod-epg-ost-proxy-01.hi.inet:6666"
+
+# Maximum number of open files
+number_open_files: 20000
+
+# SSL config
+nginx_ssl_protocols: TLSv1 TLSv1.1 TLSv1.2
+nginx_ssl_ciphers: EECDH+AESGCM:EDH+AESGCM:AES256+EECDH:AES256+EDH
+nginx_certificate: nginx/is-user-valid.cer
+nginx_key_content: "{{ vault.ssl.nginx_private_key_content }}"
+nginx_dhparams_content: "{{ vault.ssl.dhparams_content }}"

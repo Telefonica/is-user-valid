@@ -1,0 +1,24 @@
+- name: be sure "libselinux-python" is installed
+  yum: name=libselinux-python state=present
+
+- name: set permissive mode
+  selinux: policy=targeted state=permissive
+
+- name: Remove require tty
+  lineinfile: regexp='.*requiretty' dest=/etc/sudoers state=absent
+
+- name: Disable iptables
+  service: name=iptables state=stopped enabled=false
+  when: ansible_distribution_major_version | int < 7
+
+- name: Establishing hard limit for number of open files
+  lineinfile: dest=/etc/security/limits.conf regexp="\* hard nofile" insertbefore="# End of file" line="* hard nofile {{ number_open_files }}"
+
+- name: Establishing soft limit for number of open files
+  lineinfile: dest=/etc/security/limits.conf regexp="\* soft nofile" insertbefore="# End of file" line="* soft nofile {{ number_open_files }}"
+
+- name: Establishing umask to allow any user to use python libs
+  lineinfile: dest=/etc/bashrc state=present regexp="umask 077" line="umask 022"
+
+- name: Establishing umask for root too
+  lineinfile: dest=/root/.bashrc state=absent regexp="umask 077"

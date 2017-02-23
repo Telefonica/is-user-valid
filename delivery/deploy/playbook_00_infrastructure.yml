@@ -1,0 +1,131 @@
+- name: Create infrastructure
+  hosts: localhost
+  connection: local
+  tags: infrastructure
+  tasks:
+  #
+  # Basic openstack infrastructure
+  #
+  - name: Basic | Add public key
+    os_keypair:
+      state: present
+      name: "{{ os_ssh_key_name }}"
+      public_key: ssh-rsa AAAAB3NzaC1yc2EAAAABIwAAAQEAu2NZwhFL+XPur8EM338YFeih4kN2RCVNGOlvTdp8PfVSxfjKcMVqmrB93FAb2ScOP0PWGEZuNcISn69kOHXa97LJnATudTx+P+vdhh4wlEGHPa3dT3OoaY7OICOv5MS7nMfaiFGfKpew1tZ36J7LkQyl2j2+GS2i1P1LgR6YSKfo/uM0mwoZcKLNoKmBMH4GHJ/VkFMbCM1eroziI9IV0iYCFg+t86jth/DasqGqM+8EU9bQQGGTOGJWDl+P6tn0rOvR5byZJbMqOfLFXJWGP361oyVj0R4I8iH038aJSMXPWYxziuj++gzpv/DLUtgXIV3nbqy/QyYtaqjhJmPIpw==
+
+#
+# Create security group to handle access from and to the different microservices
+#
+
+  - include: tasks/create_security_group.yml
+    with_items:
+      - name: basic_access
+        state: present
+        description: Basic access (ssh)
+      - name: balancer_access
+        state: present
+        description: Balancer access (http, https)
+      - name: is_user_valid_internal_access
+        state: present
+        description: Local communication between the balancers and is_user_valid
+
+#
+# SSH is only accesible from management network
+#
+
+  - name: Basic | Create ssh security group rule
+    os_security_group_rule:
+      security_group: basic_access
+      protocol: tcp
+      port_range_min: 22
+      port_range_max: 22
+      remote_ip_prefix: 0.0.0.0/0
+
+#
+# Load balancer is the only publicly accessible service
+#
+
+  - name: Basic | Create balancer security group rule (nginx)
+    os_security_group_rule:
+      security_group: balancer_access
+      protocol: tcp
+      port_range_min: 443
+      port_range_max: 443
+      remote_ip_prefix: 0.0.0.0/0
+
+  - name: Basic | Create balancer security group rule (nginx)
+    os_security_group_rule:
+      security_group: balancer_access
+      protocol: tcp
+      port_range_min: 80
+      port_range_max: 80
+      remote_ip_prefix: 0.0.0.0/0
+
+#
+# The load balancer needs to access is-user-valid instances
+#
+
+  - name: Basic | Create is-user-valid internal access security group rule
+    os_security_group_rule:
+      security_group: is_user_valid_internal_access
+      protocol: tcp
+      port_range_min: "{{ is_user_valid_role_config.port }}"
+      port_range_max: "{{ is_user_valid_role_config.port }}"
+      remote_group: "{{sec_groups_info.balancer_access}}"
+
+  #
+  # Create instances
+  #
+
+  - include: tasks/create_instance.yml
+    vars:
+      os_vm_basename: loadbalancer
+      image: "{{ ost_images.rh7_2nic }}"
+      flavor: "{{ flavors.loadbalancer }}"
+      security_groups: basic_access,balancer_access
+      ansible_host_groups: loadbalancer
+      count: "{{ amounts.loadbalancer | default(2) }}"
+
+  - include: tasks/create_instance.yml
+    vars:
+      os_vm_basename: is-user-valid
+      image: "{{ ost_images.rh6_2nic }}"
+      flavor: "{{ flavors.is_user_valid }}"
+      security_groups: basic_access,is_user_valid_internal_access
+      ansible_host_groups: is-user-valid
+      count: "{{ amounts.is_user_valid | default(2) }}"
+
+  #
+  # Finish
+  #
+
+  - name: Show groups information
+    debug: var=groups
+
+  - name: Wait for instances to settle down
+    pause: seconds=50
+
+- name: General adaptations in new instances
+  hosts: all,!localhost
+  remote_user: cloud-user
+  become: true
+  tags: infrastructure
+  tasks:
+    - name: Enforce eth1 to be the default route
+      lineinfile: dest=/etc/sysconfig/network line="GATEWAYDEV=eth1" state=present
+      register: gatewaydev
+    - name: Restart network if modified /etc/sysconfig/network
+      service: name=network state=restarted
+      when: gatewaydev.changed
+
+- name: Adjust internal name resolution
+  hosts: all,!localhost
+  remote_user: cloud-user
+  become: true
+  tags: infrastructure
+  tasks:
+    - name: Update /etc/hosts
+      lineinfile: dest=/etc/hosts regexp='^[0-9\.]+ {{ hostvars[item].ansible_hostname }} {{ hostvars[item].ansible_hostname }}.novalocal.openstacklocal$'
+                  line="{{ hostvars[item].ansible_default_ipv4.address }} {{ hostvars[item].ansible_hostname }} {{ hostvars[item].ansible_hostname }}.novalocal.openstacklocal"
+                  state=present
+      when: hostvars[item].ansible_default_ipv4.address is defined
+      with_items: "{{ groups['all'] }}"

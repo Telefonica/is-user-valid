@@ -1,0 +1,36 @@
+---
+#
+# common ansible configuration
+#
+
+# This variable tells ansible to use the python interpreter in the virtualenv
+ansible_python_interpreter: /usr/bin/env python
+
+#
+# infrastructure variables
+#
+
+# Name of the management network. It is used to assign floating IPs to the virtual machines.
+os_network_management: private_management
+
+# Name of the external network. Not used yet.
+os_network_external: private_external
+
+# Name of the coporate network.
+os_network_corp: private_corp
+
+# Name of the floating IP pool from which to choose a floating IP.
+os_floating_pool: ext_mgmt
+
+# The key pair name to be used when creating a instance.
+os_ssh_key_name: tdaf
+
+# Virtual machines are tagged (metadata) an prefixed with this tag.
+os_vm_tag: is-user-valid
+
+# Availability zones are used to distribute components.
+os_availability_zones: 3
+os_availability_zones_preffix: availzone
+
+# Default virtual machine image
+os_vm_default_image: TID-RH7-2NIC.20160503

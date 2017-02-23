@@ -1,0 +1,21 @@
+- name: Install is_valid_user
+  hosts: is-user-valid
+  remote_user: cloud-user
+  gather_facts: false
+  become: true
+  serial: 1
+
+  roles:
+    - role: ansible-is-user-valid
+      config: "{{ is_user_valid_role_config }}"
+
+- name: Install nginx for SSL offloading and loadbalancing
+  hosts: loadbalancer
+  gather_facts: false
+  remote_user: cloud-user
+  become: true
+  tags:
+    - nginx
+
+  tasks:
+    - include: tasks/nginx.yml

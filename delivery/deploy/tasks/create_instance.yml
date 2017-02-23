@@ -1,0 +1,36 @@
+- name: "{{ ansible_host_groups }} | Launch {{ count | default(1) }} instances with flavor {{ flavor }}"
+  os_server:
+    name: "{{ os_vm_basename }}-{{ item }}"
+    image: "{{ image | default(os_vm_default_image) }}"
+    flavor: "{{ flavor }}" # flavor name (e.g. TID-01CPU-512MB-20GB)
+    key_name: "{{ os_ssh_key_name }}"
+    auto_floating_ip: no
+    security_groups: "{{ security_groups }}"
+    availability_zone: "{{ os_availability_zones_preffix }}{{ item | int % os_availability_zones + 1 }}"
+    nics:
+      - net-name: "{{ os_network_management }}"
+      - net-name: "{{ os_network_external }}"
+    meta:
+      ansible_host_groups: "{{ ansible_host_groups }}"
+      deployment_group: "{{ deployment_group | default('common') }}"
+      tag: "{{ os_vm_tag }}"
+  register: instances
+  with_sequence: count={{ count | default(1) }}
+
+- name: "{{ ansible_host_groups }} | Assign floating IP if needed"
+  os_floating_ip:
+    server: "{{ item.id }}"
+    fixed_address: "{{ item.server.addresses[os_network_management][0].addr }}"
+    network: "{{ os_floating_pool }}"
+    reuse: yes
+    wait: yes
+  when: item.server.addresses[os_network_management] | length == 1 # no floating IP yet
+  register: floating_ips
+  with_items: "{{ instances.results }}"
+
+- name: "{{ ansible_host_groups }} | Register new floating IP to the group {{ ansible_host_groups }}"
+  add_host:
+    name: "{{ item.floating_ip.floating_ip_address }}"
+    groups: "{{ ansible_host_groups }}"
+  when: item.changed
+  with_items: "{{ floating_ips.results }}"

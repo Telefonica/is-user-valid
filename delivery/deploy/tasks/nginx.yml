@@ -1,0 +1,68 @@
+- name: Install nginx
+  yum: name=nginx state=present update_cache=yes
+
+- name: Create nginx service user
+  user: name=nginx state=present
+
+- name: Create required nginx folders
+  file:
+    path=/etc/nginx/{{ item }}
+    state=directory
+    owner=nginx group=nginx mode=0600
+  with_items:
+    - certs
+    - sites-enabled
+
+- name: Copy *.tid.es SSL certificate
+  copy:
+    src="{{ nginx_certificate }}"
+    dest=/etc/nginx/certs/tid.cer
+    owner=nginx group=nginx mode=0600
+
+- name: Copy *.tid.es SSL private key
+  copy:
+    content="{{ nginx_key_content }}"
+    dest=/etc/nginx/certs/tid.key
+    owner=nginx group=nginx mode=0600
+
+- name: Copy the nginx dh parameters
+  copy:
+    content={{ nginx_dhparams_content }}
+    dest=/etc/nginx/dhparams.pem
+    owner=nginx group=nginx mode=0600
+
+- name: Copy nginx.conf
+  copy:
+    src=nginx/nginx.conf
+    dest=/etc/nginx/nginx.conf
+    owner=nginx group=nginx mode=0600
+
+- name: Copy proxy.conf
+  copy:
+    src=nginx/proxy.conf
+    dest=/etc/nginx/conf.d/proxy.conf
+    owner=nginx group=nginx mode=0600
+
+- name: Create upstream.conf
+  template:
+    src=nginx/upstream.conf.j2
+    dest=/etc/nginx/conf.d/upstream.conf
+    owner=nginx group=nginx mode=0600
+
+- name: Create public.conf
+  template:
+    src=nginx/public.conf.j2
+    dest=/etc/nginx/sites-enabled/public.conf
+    owner=nginx group=nginx mode=0600
+
+- name: Add nginx logrotation
+  copy: src=nginx/logrotate.conf dest=/etc/logrotate.d/nginx
+
+- name: Configure nginx logrotation in cron every hour
+  cron: name="nginx log" minute="10" job="/usr/sbin/logrotate /etc/logrotate.d/nginx" cron_file="nginx-logs" user=root
+
+- name: Make sure nginx starts at boot time
+  service: name=nginx enabled=yes
+
+- name: Start nginx service
+  service: name=nginx state=reloaded
